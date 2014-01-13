@@ -105,33 +105,31 @@ function Beam(origin,angle,extent,color,intensity,clicks,moveable,level) {
 
     };
 
+};
 
+// ********** Beam methods **********
 
-    // ********** Beam methods **********
+// erase this beam from the canvas
+Beam.prototype.erase = function() {
+    for( var i=0; i<this.children.length; i++ )
+        this.children[i].erase();
+    this.children = [];
+    this.beam.remove();
+    this.diffuse.remove();
+    this.handle.remove();
+    this.rotation_cue.remove();
+    //this.level.resolveGoals();
+};
 
-    // erase this beam from the canvas
-    this.erase = function() {
-        for( var i=0; i<this.children.length; i++ )
-            this.children[i].erase();
-        this.children = [];
-        this.beam.remove();
-        this.diffuse.remove();
-        this.handle.remove();
-        this.rotation_cue.remove();
-        //this.level.resolveGoals();
-    };
-
-    // redraw the beam
-    this.draw = function() {
-        this.beam.attr({'path':'M'+this.origin.x+','+this.origin.y
-                        +'l'+(this.extent*Math.cos(this.angle))+','+(this.extent*Math.sin(this.angle)),
-                        'stroke':this.color.hexString()});
-        this.diffuse.attr({'path':'M'+this.origin.x+','+this.origin.y
-                           +'l'+(this.extent*Math.cos(this.angle))+','+(this.extent*Math.sin(this.angle)),
-                           'stroke':this.color.hexString()});
-        this.handle.attr({'cx':this.origin.x,'cy':this.origin.y,'fill-opacity':(this.moveable&3)?0.25:0});
-        this.rotation_cue.attr('path','M'+(this.origin.x+20*Math.cos(this.angle+0.5))+','+(this.origin.y+20*Math.sin(this.angle+0.5))
-                               +'A20,20,0,0,0,'+(this.origin.x+20*Math.cos(this.angle-0.5))+','+(this.origin.y+20*Math.sin(this.angle-0.5)));
-    };
-    
+// redraw the beam
+Beam.prototype.draw = function() {
+    this.beam.attr({'path':'M'+this.origin.x+','+this.origin.y
+                    +'l'+(this.extent*Math.cos(this.angle))+','+(this.extent*Math.sin(this.angle)),
+                    'stroke':this.color.hexString()});
+    this.diffuse.attr({'path':'M'+this.origin.x+','+this.origin.y
+                       +'l'+(this.extent*Math.cos(this.angle))+','+(this.extent*Math.sin(this.angle)),
+                       'stroke':this.color.hexString()});
+    this.handle.attr({'cx':this.origin.x,'cy':this.origin.y,'fill-opacity':(this.moveable&3)?0.25:0});
+    this.rotation_cue.attr('path','M'+(this.origin.x+20*Math.cos(this.angle+0.5))+','+(this.origin.y+20*Math.sin(this.angle+0.5))
+                           +'A20,20,0,0,0,'+(this.origin.x+20*Math.cos(this.angle-0.5))+','+(this.origin.y+20*Math.sin(this.angle-0.5)));
 };

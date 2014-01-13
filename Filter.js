@@ -16,13 +16,13 @@ function Filter(center,width,angle,color,clicks,moveable,level) {
     this.rotation_cue;
 
     this.initialize = function() {
-
+        
         this.center.x = center.x;
         this.center.y = center.y;
         this.width = width;
         this.angle = angle;
         this.color = color;
-
+        
         this.filter = this.level.paper.path();
         
         this.filter.attr({'stroke':this.color.hexString(),
@@ -95,55 +95,52 @@ function Filter(center,width,angle,color,clicks,moveable,level) {
                 },function(e){},this,this,this);
         }
         
-    }
-        
-
-
-    // ********** Filter methods **********
-
-    // if the beam intersects this filter, return the length of the beam, otherwise return NaN
-    this.find_tangent = function(beam) {
-
-        // if the beam and filter are parallel, there is no interaction
-        var diff = Math.abs(beam.angle - this.angle);
-        if( (diff/Math.PI)%1 < 1e-4 )
-            return NaN;
-        
-        var s2 = Math.sin(this.angle-beam.angle);
-        
-        var mirror_intersection = (Math.sin(beam.angle)*(this.center.x-beam.origin.x)
-                                   -Math.cos(beam.angle)*(this.center.y-beam.origin.y))/s2;
-        if( mirror_intersection > 0.5*this.width || mirror_intersection < -0.5*this.width )
-            return NaN;
-        
-        var t = (Math.cos(this.angle)*(beam.origin.y-this.center.y) - Math.sin(this.angle)*(beam.origin.x-this.center.x))/s2;
-        if( t > 1e-8 ) 
-            return t;
-        else
-            return NaN;
-        
-    }
-
-    // erase this filter from the canvas
-    this.erase = function() {
-        this.filter.remove();
-        this.handle.remove();
-        this.rotation_cue.remove();
-        this.level.resolveBeams();
-        this.level.resolveGoals();
-    };
-
-    // redraw the filter
-    this.draw = function() {
-
-        this.filter.attr({'path':'M'+(this.center.x-0.5*this.width*Math.cos(this.angle))+','+(this.center.y-0.5*this.width*Math.sin(this.angle))
-                          +'l'+(this.width*Math.cos(this.angle))+','+(this.width*Math.sin(this.angle))});
-        this.handle.attr({'cx':this.center.x,'cy':this.center.y,'fill-opacity':(this.moveable&3)?0.25:0});
-        this.rotation_cue.attr('path','M'+(this.center.x+20*Math.cos(this.angle+0.5))+','+(this.center.y+20*Math.sin(this.angle+0.5))
-                               +'A20,20,0,0,0,'+(this.center.x+20*Math.cos(this.angle-0.5))+','+(this.center.y+20*Math.sin(this.angle-0.5))
-                               +'M'+(this.center.x-20*Math.cos(this.angle+0.5))+','+(this.center.y-20*Math.sin(this.angle+0.5))
-                               +'A20,20,0,0,0,'+(this.center.x-20*Math.cos(this.angle-0.5))+','+(this.center.y-20*Math.sin(this.angle-0.5)));
-
     };
 
 };
+
+// if the beam intersects this filter, return the length of the beam, otherwise return NaN
+Filter.prototype.find_tangent = function(beam) {
+
+    // if the beam and filter are parallel, there is no interaction
+    var diff = Math.abs(beam.angle - this.angle);
+    if( (diff/Math.PI)%1 < 1e-4 )
+        return NaN;
+    
+    var s2 = Math.sin(this.angle-beam.angle);
+    
+    var mirror_intersection = (Math.sin(beam.angle)*(this.center.x-beam.origin.x)
+                               -Math.cos(beam.angle)*(this.center.y-beam.origin.y))/s2;
+    if( mirror_intersection > 0.5*this.width || mirror_intersection < -0.5*this.width )
+        return NaN;
+    
+    var t = (Math.cos(this.angle)*(beam.origin.y-this.center.y) - Math.sin(this.angle)*(beam.origin.x-this.center.x))/s2;
+    if( t > 1e-8 ) 
+        return t;
+    else
+        return NaN;
+    
+};
+
+// erase this filter from the canvas
+Filter.prototype.erase = function() {
+    this.filter.remove();
+    this.handle.remove();
+    this.rotation_cue.remove();
+    this.level.resolveBeams();
+    this.level.resolveGoals();
+};
+
+// redraw the filter
+Filter.prototype.draw = function() {
+
+    this.filter.attr({'path':'M'+(this.center.x-0.5*this.width*Math.cos(this.angle))+','+(this.center.y-0.5*this.width*Math.sin(this.angle))
+                      +'l'+(this.width*Math.cos(this.angle))+','+(this.width*Math.sin(this.angle))});
+    this.handle.attr({'cx':this.center.x,'cy':this.center.y,'fill-opacity':(this.moveable&3)?0.25:0});
+    this.rotation_cue.attr('path','M'+(this.center.x+20*Math.cos(this.angle+0.5))+','+(this.center.y+20*Math.sin(this.angle+0.5))
+                           +'A20,20,0,0,0,'+(this.center.x+20*Math.cos(this.angle-0.5))+','+(this.center.y+20*Math.sin(this.angle-0.5))
+                           +'M'+(this.center.x-20*Math.cos(this.angle+0.5))+','+(this.center.y-20*Math.sin(this.angle+0.5))
+                           +'A20,20,0,0,0,'+(this.center.x-20*Math.cos(this.angle-0.5))+','+(this.center.y-20*Math.sin(this.angle-0.5)));
+
+};
+
