@@ -6,7 +6,7 @@ window.onload = function () {
         return {path:[['M',x,y],['L',x,(y-r)],['A',r,r,0,(a>Math.PI?1:0),1,(x+r*Math.cos(a-0.5*Math.PI)),(y+r*Math.sin(a-0.5*Math.PI))],['L',x,y],['z']]};
     };
 
-    var game = new Game(paper);
+    var game = new Game(paper,'test');
     var level, beam, mirror, goal;
 
     level = new Level(game);
